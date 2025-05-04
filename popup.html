@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Security & Domain Details</title>
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-color: #4F46E5;
+      --secure-color: #10B981;
+      --warning-color: #F59E0B;
+      --green: #10B981;
+      --red: #EF4444;
+      --yellow: #F59E0B;
+      --text-primary: #1F2937;
+      --text-secondary: #6B7280;
+      --bg-primary: #ffffff;
+      --bg-secondary: #F3F4F6;
+      --bg-color: #ffffff;
+      --surface-color: #F3F4F6;
+      --border: #E5E7EB;
+      --border-color: #E5E7EB;
+      --radius: 8px;
+      --transition: all 0.2s ease;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 360px;
+      height: auto;
+      max-height: 600px;
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .container {
+      padding: 16px;
+      max-height: calc(600px - 32px);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .website-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .favicon-container {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      margin-right: 12px;
+    }
+
+    #favicon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .favicon-overlay {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 16px;
+      height: 16px;
+      background-color: rgba(16, 185, 129, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      border: 1px solid white;
+    }
+
+    .favicon-overlay svg {
+      width: 10px;
+      height: 10px;
+      stroke: white;
+      stroke-width: 3;
+    }
+
+    .website-info-text {
+      flex-grow: 1;
+    }
+
+    .website-info h1 {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }
+
+    #https-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: none;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 10px;
+      color: var(--secure-color);
+      background-color: rgba(16, 185, 129, 0.1);
+      border-radius: 20px;
+      animation: fadeIn 0.5s ease-in;
+      transition: var(--transition);
+      cursor: pointer;
+      margin-left: 16px;
+      z-index: 10;
+    }
+
+    #https-badge:hover {
+      background-color: rgba(16, 185, 129, 0.2);
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
+      transform: translateY(-1px);
+    }
+
+    #https-badge svg {
+      width: 14px;
+      height: 14px;
+      margin-right: 4px;
+      transition: transform 0.2s ease;
+    }
+
+    #https-badge:hover svg {
+      transform: scale(1.1);
+    }
+
+    #https-badge.insecure {
+      color: var(--red);
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+    
+    #https-badge.insecure:hover {
+      background-color: rgba(239, 68, 68, 0.2);
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15);
+    }
+
+    .section {
+      background-color: var(--surface-color);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 16px;
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+
+
+    .section:first-of-type {
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+
+    .section:first-of-type:hover {
+      background-color: rgba(79, 70, 229, 0.05);
+      border-color: black;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.1);
+    }
+
+    .section:first-of-type:active {
+      transform: translateY(0);
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      color: var(--primary-color);
+      justify-content: center;
+      text-align: center;
+    }
+
+    .section-title svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+   
+    .section:first-of-type .section-title svg {
+      animation: pulse 3s infinite ease-in-out;
+      transform-origin: center;
+      filter: drop-shadow(0 0 2px rgba(79, 70, 229, 0.3));
+      transition: filter 0.3s ease;
+    }
+
+    @keyframes pulse {
+      0% { 
+        transform: scale(1);
+        filter: drop-shadow(0 0 2px rgba(79, 70, 229, 0.3));
+      }
+      50% { 
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 4px rgba(79, 70, 229, 0.5));
+      }
+      100% { 
+        transform: scale(1);
+        filter: drop-shadow(0 0 2px rgba(79, 70, 229, 0.3));
+      }
+    }
+
+    .section:first-of-type:hover .section-title svg {
+      animation: pulse-rotate 1s infinite ease-in-out;
+      filter: drop-shadow(0 0 5px rgba(79, 70, 229, 0.7));
+    }
+
+    @keyframes pulse-rotate {
+      0% { 
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 3px rgba(79, 70, 229, 0.5));
+      }
+      50% { 
+        transform: scale(1.2) rotate(5deg);
+        filter: drop-shadow(0 0 6px rgba(79, 70, 229, 0.8));
+      }
+      100% { 
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 3px rgba(79, 70, 229, 0.5));
+      }
+    }
+
+
+    .section:first-of-type .section-title {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section:first-of-type .section-title::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      animation: shine 6s infinite ease-in-out;
+    }
+
+    @keyframes shine {
+      0% { transform: rotate(30deg) translateX(-100%); }
+      20%, 100% { transform: rotate(30deg) translateX(100%); }
+    }
+
+    .section:hover .section-title svg {
+      transform: scale(1.1);
+    }
+
+
+    #security-features {
+      display: flex;
+      flex-wrap: wrap;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 4px 0;
+      scrollbar-width: thin;
+      justify-content: center;
+    }
+    
+    #security-features::-webkit-scrollbar {
+      height: 6px;
+    }
+    
+    #security-features::-webkit-scrollbar-thumb {
+      background-color: var(--border-color);
+      border-radius: 3px;
+    }
+    
+    #security-features::-webkit-scrollbar-track {
+      background-color: var(--bg-secondary);
+      border-radius: 3px;
+    }
+
+    .security-feature {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      padding: 10px 12px;
+      background-color: var(--bg-color);
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      animation: fadeIn 0.3s ease forwards;
+      animation-delay: calc(var(--index) * 0.05s);
+      opacity: 0;
+      transition: all 0.2s ease-in-out;
+      flex-shrink: 0;
+    }
+
+    .security-feature:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .security-feature svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .security-feature:hover svg {
+      transform: scale(1.1);
+    }
+
+    .security-feature.secure {
+      color: var(--secure-color);
+      border-color: rgba(16, 185, 129, 0.2);
+      background-color: rgba(16, 185, 129, 0.05);
+      cursor: pointer;
+    }
+
+    .security-feature.secure:hover {
+      background-color: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+    }
+
+    .security-feature.warning {
+      color: var(--warning-color);
+      border-color: rgba(245, 158, 11, 0.2);
+      background-color: rgba(245, 158, 11, 0.05);
+      flex-basis: 100%;
+      box-sizing: border-box;
+      white-space: normal;
+    }
+
+    .security-feature.warning:hover {
+      background-color: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+    }
+
+
+    #server-info-section {
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+
+    #server-info-section:hover {
+      background-color: rgba(79, 70, 229, 0.05);
+      border-color: black;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.1);
+    }
+
+    #server-info-section:active {
+      transform: translateY(0);
+    }
+
+    #server-info-section.copied {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+
+    #server-info-section.no-copy {
+      cursor: default;
+    }
+    
+    #server-info-section.can-copy {
+      cursor: pointer;
+    }
+    
+    #server-info-section.no-copy:hover {
+      transform: none;
+      box-shadow: none;
+      background-color: var(--surface-color);
+      border-color: transparent;
+    }
+
+
+    .copy-tooltip {
+      position: absolute;
+      background-color: var(--green);
+      color: white;
+      padding: 4px;
+      border-radius: 50%;
+      right: 16px;
+      top: 16px;
+      transform: translateY(0);
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 20;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .copy-tooltip svg {
+      width: 12px;
+      height: 12px;
+      stroke: white;
+    }
+    
+    #server-info-section.copied .copy-tooltip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .info-item {
+      display: flex;
+      margin-bottom: 8px;
+      padding: 8px;
+      border-radius: 6px;
+      background-color: white;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      overflow: hidden;
+      transition: var(--transition);
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .info-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      margin-right: 8px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .info-label svg {
+      width: 16px;
+      height: 16px;
+      color: #444444;
+    }
+
+    #ip-address, #hostname {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      text-align: left;
+      flex: 0 auto;
+    }
+
+ 
+    #ip-address:hover, #hostname:hover {
+      font-size: 16px;
+      transition: font-size 0.2s ease;
+      color: var(--primary-color);
+      overflow: visible;
+      white-space: normal;
+      word-break: break-all;
+    }
+    
+   
+    #server-info-section .section-title svg {
+      animation: float 4s infinite ease-in-out;
+      transform-origin: center;
+      filter: drop-shadow(0 0 2px rgba(79, 70, 229, 0.3));
+      transition: filter 0.3s ease;
+    }
+
+    @keyframes float {
+      0% { 
+        transform: translateY(0) rotate(0deg);
+        filter: drop-shadow(0 0 2px rgba(79, 70, 229, 0.3));
+      }
+      50% { 
+        transform: translateY(-3px) rotate(3deg);
+        filter: drop-shadow(0 0 4px rgba(79, 70, 229, 0.5));
+      }
+      100% { 
+        transform: translateY(0) rotate(0deg);
+        filter: drop-shadow(0 0 2px rgba(79, 70, 229, 0.3));
+      }
+    }
+
+
+    #server-info-section:hover .section-title svg {
+      animation: spin-globe 2s infinite ease-in-out;
+      filter: drop-shadow(0 0 5px rgba(79, 70, 229, 0.7));
+    }
+
+    @keyframes spin-globe {
+      0% { 
+        transform: rotate(0deg) scale(1);
+        filter: drop-shadow(0 0 3px rgba(79, 70, 229, 0.5));
+      }
+      50% { 
+        transform: rotate(180deg) scale(1.1);
+        filter: drop-shadow(0 0 6px rgba(79, 70, 229, 0.8));
+      }
+      100% { 
+        transform: rotate(360deg) scale(1);
+        filter: drop-shadow(0 0 3px rgba(79, 70, 229, 0.5));
+      }
+    }
+
+  
+    #server-info-section .section-title {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #server-info-section .section-title::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      animation: server-shine 8s infinite ease-in-out;
+    }
+
+    @keyframes server-shine {
+      0%, 30% { transform: rotate(30deg) translateX(-100%); }
+      50%, 100% { transform: rotate(30deg) translateX(100%); }
+    }
+    
+   
+    .info-item:hover {
+      min-height: 28px;
+      z-index: 10;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 12px;
+      display: block;
+      max-width: calc(100% - 24px);
+    }
+    
+    .info-item:hover .info-label {
+      display: none;
+    }
+    
+    .info-item:hover #ip-address,
+    .info-item:hover #hostname {
+      display: block;
+      text-align: center;
+      width: 100%;
+      margin: 0 auto;
+      max-width: 100%;
+      font-size: 16px;
+      color: var(--primary-color);
+      overflow: visible;
+      white-space: normal;
+      word-break: break-all;
+      max-height: 200px; 
+      overflow-y: auto; 
+    }
+
+ 
+    #loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 0;
+    }
+
+    .loading-spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+      margin-bottom: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+  
+    #ip-loading .loading-spinner {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 0;
+      border: 3px solid rgba(79, 70, 229, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: smoothSpin 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.1);
+    }
+    
+    @keyframes smoothSpin {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); border-width: 2px; }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    #content-container {
+      display: none;
+    }
+
+    #ip-loading {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      animation: fadeIn 0.5s ease;
+    }
+
+    #ip-loading .loading-spinner {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 0;
+    }
+
+    #ip-info-content {
+      display: none;
+    }
+    
+
+    .app-footer {
+      text-align: center;
+      padding: 8px 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .app-footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: var(--transition);
+    }
+    
+    .app-footer a:hover {
+      color: var(--primary-color);
+    }
+    
+    .app-footer svg {
+      width: 14px;
+      height: 14px;
+      margin-right: 4px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .footer-links a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+    }
+    
+    .footer-links svg {
+      width: 14px;
+      height: 14px;
+    }
+    
+    .footer-title {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="website-info">
+      <div class="favicon-container">
+        <img id="favicon" src="icons/globe.svg" alt="Website favicon">
+        <div class="favicon-overlay">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="website-info-text">
+        <h1 id="website-title">Loading...</h1>
+      </div>
+      <div id="https-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        Secure
+      </div>
+    </div>
+
+
+    <div id="loading-container">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Analyzing security features...</p>
+    </div>
+
+
+    <div id="content-container">
+      <div class="section">
+        <div class="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          Security Features
+        </div>
+        <div id="security-features">
+        </div>
+      </div>
+
+      <div class="section" id="server-info-section">
+        <div class="copy-tooltip">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Domain Details
+        </div>
+        <div class="section-content" id="ip-info-content">
+          <div class="info-item">
+            <span id="ip-address">192.178.24.228</span>
+          </div>
+          <div class="info-item">
+            <span id="hostname">https://www.google.com</span>
+          </div>
+        </div>
+        <div id="ip-loading">
+          <div class="loading-spinner"></div>
+          <div>Loading IP information...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-footer">
+    <div class="footer-links">
+      <a href="https://github.com/newlifebegans/Website-Security-Domain-Details-1.0" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+        </svg>
+        GitHub
+      </a>
+      <a href="https://t.me/iodevadmin" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2l-19 9.6L7 14l2 6 2-4 6.5 3.5L21.5 2z"></path>
+        </svg>
+        Telegram
+      </a>
+      <span class="footer-title">Site Security Checker v1.0</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html> 
