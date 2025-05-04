@@ -4,6 +4,10 @@ A browser extension that analyzes website security features and displays server 
 
 https://www.youtube.com/watch?v=_CDYOog9QzI
 
+<img width="834" alt="Screenshot 2025-05-04 at 6 39 20 PM" src="https://github.com/user-attachments/assets/51e5f798-64e8-4910-a8da-ef23fa692707" />
+<img width="834" alt="Screenshot 2025-05-04 at 6 39 48 PM" src="https://github.com/user-attachments/assets/d96a7143-396a-4d68-8a47-1e9b6ddee386" />
+
+
 ## Features
 
 - Displays website security features (HTTPS, SSL Certificate, Content Security Policy, etc.)
