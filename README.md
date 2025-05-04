@@ -2,6 +2,8 @@
 
 A browser extension that analyzes website security features and displays server information including IP address and hostname.
 
+https://www.youtube.com/watch?v=_CDYOog9QzI
+
 ## Features
 
 - Displays website security features (HTTPS, SSL Certificate, Content Security Policy, etc.)
